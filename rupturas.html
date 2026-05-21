@@ -13,6 +13,66 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .stats-grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Torna os cards quadrados, organizados e centralizados */
+        .stats-grid-container .stat-card {
+            flex: 1 1 150px;
+            max-width: 200px;
+            aspect-ratio: 1; /* Força os cards a serem quadrados (1:1) */
+            padding: 1.5rem 1rem !important;
+            min-height: auto !important;
+            height: auto !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .stats-grid-container .stat-header {
+            width: 100%;
+            display: flex;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+
+        /* O primeiro card tem um badge, vamos colocar ele embaixo do título */
+        #card-recovery .stat-header {
+            flex-direction: column !important;
+            gap: 0.4rem;
+        }
+
+        .stats-grid-container .stat-label {
+            font-size: 0.72rem !important;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .stats-grid-container .stat-value {
+            font-size: 2.5rem !important;
+            font-weight: 800;
+            line-height: 1;
+            margin: 0.25rem 0 !important;
+        }
+
+        .stats-grid-container .stat-footer {
+            font-size: 0.7rem !important;
+            line-height: 1.25;
+            color: var(--text-muted);
+            white-space: normal !important;
+            margin-top: 4px;
+        }
+    </style>
     
     <!-- Bibliotecas Externas -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
@@ -41,11 +101,6 @@
                 </div>
             </div>
             <div class="header-actions">
-                <div class="buyer-selector" id="buyer-filter-container">
-                    <button class="buyer-btn active" data-buyer="all">👤 Todos</button>
-                    <!-- Injetado via JS -->
-                </div>
-
                 <label for="folder-upload" class="btn btn-primary">
                     <span class="btn-icon">📁</span> Pasta "Análise Rupturas"
                 </label>
@@ -54,6 +109,20 @@
                 <a href="index.html" class="btn btn-secondary">
                     <span class="btn-icon">📦</span> Gestor de Estoque
                 </a>
+                <div class="dropdown">
+                    <a href="rupturas.html" class="btn btn-secondary" style="position: relative; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.3);">
+                        <span class="btn-icon">📈</span> Análise Evolutiva
+                        <span style="position: absolute; top: -10px; right: -10px; background: linear-gradient(to right, #6366f1, #a855f7); color: white; font-size: 0.55rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4); white-space: nowrap; z-index: 10;">Novo Spec</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="giro.html" class="dropdown-item dropdown-item-giro">
+                            <span class="btn-icon">🔄</span> Análise de 6 Meses
+                        </a>
+                    </div>
+                </div>
+                <a href="entradas.html" class="btn btn-secondary">
+                    <span class="btn-icon">📑</span> Análise de Entradas
+                </a>
             </div>
         </header>
 
@@ -61,26 +130,33 @@
         <main id="main-content" style="display: none;">
             
             <!-- SELETOR TEMPORAL -->
-            <div class="main-card evolution-header-card" style="margin-bottom: 2rem;">
-                <div class="card-body" style="padding: 2.5rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+            <!-- SELETOR TEMPORAL -->
+            <div class="main-card evolution-header-card" style="margin-bottom: 1.25rem;">
+                <div class="card-body" style="padding: 1.25rem 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
                         <div>
-                            <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 0.5rem; letter-spacing: 0.5px;">
-                                <span class="header-icon">🕰️</span> NAVEGADOR DE EVOLUÇÃO OPERACIONAL
-                            </h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                Base de Referência Fixa: <strong id="base-date-display" style="color: var(--info);">---</strong>
+                            <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+                                <h3 style="font-size: 1.05rem; color: #fff; margin: 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                                    <span class="header-icon" style="font-size: 1.15rem;">🕰️</span> NAVEGADOR DE EVOLUÇÃO
+                                </h3>
+                                <div class="comparison-selectors" style="display: flex; gap: 0.35rem;">
+                                    <button id="btn-comp-historica" class="filter-btn active" style="font-size: 0.7rem; height: 28px; padding: 0 10px;">📅 Histórica (Base vs Atual)</button>
+                                    <button id="btn-comp-diaria" class="filter-btn" style="font-size: 0.7rem; height: 28px; padding: 0 10px;">🔄 Diária (Ant. vs Atual)</button>
+                                </div>
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.4rem;">
+                                Base Fixa: <strong id="base-date-display" style="color: var(--info);">---</strong>
                             </p>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 0.5rem;">Comparativo Atual</div>
-                            <div id="current-snapshot-date" style="font-size: 2.2rem; font-weight: 800; color: #6366f1; font-family: 'Outfit', sans-serif; line-height: 1;">---</div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; background: rgba(99, 102, 241, 0.08); padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                            <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">Comparativo Atual:</div>
+                            <div id="current-snapshot-date" style="font-size: 1.35rem; font-weight: 800; color: #818cf8; font-family: 'Outfit', sans-serif; line-height: 1;">---</div>
                         </div>
                     </div>
                     
-                    <div class="timeline-slider-wrapper">
-                        <input type="range" id="timeline-range" min="0" max="0" step="1" value="0" class="premium-range">
-                        <div id="timeline-ticks" class="timeline-ticks">
+                    <div class="timeline-slider-wrapper" style="margin-top: 0.25rem; padding: 0.25rem 0;">
+                        <input type="range" id="timeline-range" min="0" max="0" step="1" value="0" class="premium-range" style="margin-bottom: 0.5rem;">
+                        <div id="timeline-ticks" class="timeline-ticks" style="margin-top: 0;">
                             <!-- Injetado via JS -->
                         </div>
                     </div>
@@ -88,49 +164,112 @@
             </div>
 
             <!-- KPI'S DE RECUPERAÇÃO -->
-            <section class="stats-grid" style="margin-bottom: 2rem;">
-                <!-- Eficiência Global -->
-                <div class="stat-card card-evolution-main" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.05)); border: 1px solid rgba(16, 185, 129, 0.3);">
-                    <div class="stat-header">
-                        <span class="stat-label">TAXA DE RECUPERAÇÃO GLOBAL</span>
-                        <span id="efficiency-percent" class="trend-badge" style="background: #10b981; color: white;">0%</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; margin-top: 1rem;">
+                <h3 style="font-size: 1.05rem; color: #fff; margin: 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;">
+                    <span class="header-icon">📊</span> KPI'S DE RECUPERAÇÃO
+                </h3>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" id="btn-toggle-kpis" onclick="const c=document.querySelector('.stats-grid-container'); const s=c.classList.toggle('show-extra-kpis'); document.getElementById('toggle-kpi-text').textContent=s?'Ocultar KPIs':'Mostrar Mais KPIs'; document.getElementById('toggle-kpi-icon').textContent=s?'🙈':'👁️';" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; height: auto; background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.3);">
+                        <span class="btn-icon" id="toggle-kpi-icon">👁️</span> <span id="toggle-kpi-text">Mostrar Mais KPIs</span>
+                    </button>
+                    <button type="button" onclick="event.preventDefault(); event.stopPropagation(); const m=document.getElementById('calc-info-modal'); m.style.display='flex'; setTimeout(()=>m.classList.add('active'),10);" class="btn btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; height: auto;">
+                        <span class="btn-icon">ℹ️</span> Entender Cálculos
+                    </button>
+                </div>
+            </div>
+            
+            <style>
+                .extra-kpi { display: none !important; }
+                .stats-grid-container.show-extra-kpis .extra-kpi { display: flex !important; }
+            </style>
+            <section class="stats-grid-container">
+                <!-- Eficiência Global / Taxa de Recuperação -->
+                <div class="stat-card card-evolution-main" id="card-recovery" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.05)); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <span class="stat-label">TAXA RECUPERAÇÃO</span>
+                        <span id="efficiency-percent" class="trend-badge" style="background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.65rem;">0%</span>
                     </div>
-                    <div class="stat-value" id="global-recovered-count" style="color: #34d399;">0</div>
-                    <div class="stat-footer" id="global-recovered-sub">Itens recuperados desde a base</div>
+                    <div class="stat-value" id="global-recovered-count" style="color: #34d399; font-weight: bold;">0</div>
+                    <div class="stat-footer" id="global-recovered-sub" style="color: var(--text-muted);">Itens recuperados (melhoria)</div>
                 </div>
 
-                <!-- Rupturas Recuperadas -->
-                <div class="stat-card" style="border-left: 4px solid #fb7185;">
+                <!-- Críticos Recuperados -->
+                <div class="stat-card" id="card-rupture-recovered" style="border-left: 4px solid #fb7185; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
                     <div class="stat-header">
-                        <span class="stat-label">RUPTURAS RECUPERADAS</span>
+                        <span class="stat-label">CRÍTICOS RECUPERADOS</span>
                     </div>
-                    <div class="stat-value" id="rupture-recovered">0</div>
-                    <div class="stat-footer" id="rupture-recovered-percent">0% de sucesso no nível 3</div>
+                    <div class="stat-value" id="rupture-recovered" style="color: #fb7185;">0</div>
+                    <div class="stat-footer" id="rupture-recovered-percent" style="color: var(--text-muted);">0% de sucesso</div>
                 </div>
 
                 <!-- Atenções Recuperadas -->
-                <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+                <div class="stat-card" id="card-attention-recovered" style="border-left: 4px solid #f59e0b; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
                     <div class="stat-header">
                         <span class="stat-label">ATENÇÕES RECUPERADAS</span>
                     </div>
-                    <div class="stat-value" id="attention-recovered">0</div>
-                    <div class="stat-footer" id="attention-recovered-percent">0% de sucesso no nível 2</div>
+                    <div class="stat-value" id="attention-recovered" style="color: #f59e0b;">0</div>
+                    <div class="stat-footer" id="attention-recovered-percent" style="color: var(--text-muted);">0% de sucesso</div>
+                </div>
+
+                <!-- Sugestões Recuperadas -->
+                <div class="stat-card" id="card-suggest-recovered" style="border-left: 4px solid #818cf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header">
+                        <span class="stat-label">SUGESTÕES RECUPERADAS</span>
+                    </div>
+                    <div class="stat-value" id="suggest-recovered" style="color: #818cf8;">0</div>
+                    <div class="stat-footer" id="suggest-recovered-percent" style="color: var(--text-muted);">0% de sucesso</div>
+                </div>
+
+                <!-- Itens Reincidentes -->
+                <div class="stat-card extra-kpi" id="card-relapsed" style="border-left: 4px solid #a855f7; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header">
+                        <span class="stat-label">ITENS REINCIDENTES</span>
+                    </div>
+                    <div class="stat-value" id="relapsed-count" style="color: #a855f7;">0</div>
+                    <div class="stat-footer" style="color: var(--text-muted);">Pioraram após recuperação</div>
+                </div>
+
+                <!-- Itens Estáveis -->
+                <div class="stat-card extra-kpi" id="card-stable" style="border-left: 4px solid #9ca3af; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header">
+                        <span class="stat-label">ITENS ESTÁVEIS</span>
+                    </div>
+                    <div class="stat-value" id="stable-count" style="color: #9ca3af;">0</div>
+                    <div class="stat-footer" style="color: var(--text-muted);">Sem alteração de criticidade</div>
                 </div>
 
                 <!-- Pioras Detectadas -->
-                <div class="stat-card" style="border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.02);">
+                <div class="stat-card extra-kpi" id="card-worsened" style="border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.02); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
                     <div class="stat-header">
                         <span class="stat-label">PIORA OPERACIONAL</span>
                     </div>
-                    <div class="stat-value" id="worsened-count" style="color: #fb7185;">0</div>
-                    <div class="stat-footer">Itens que aumentaram criticidade</div>
+                    <div class="stat-value" id="worsened-count" style="color: #f43f5e;">0</div>
+                    <div class="stat-footer" style="color: var(--text-muted);">Criticidade aumentada</div>
+                </div>
+
+                <!-- Novos Itens -->
+                <div class="stat-card extra-kpi" id="card-new-items" style="border-left: 4px solid #3b82f6; background: rgba(59, 130, 246, 0.02); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header">
+                        <span class="stat-label">NOVOS ITENS</span>
+                    </div>
+                    <div class="stat-value" id="new-items-count" style="color: #60a5fa;">0</div>
+                    <div class="stat-footer" style="color: var(--text-muted);">Entraram no giro atual</div>
+                </div>
+
+                <!-- Itens Sem Giro -->
+                <div class="stat-card extra-kpi" id="card-discontinued" style="border-left: 4px solid #6b7280; background: rgba(107, 114, 128, 0.02); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div class="stat-header">
+                        <span class="stat-label">ITENS SEM GIRO</span>
+                    </div>
+                    <div class="stat-value" id="discontinued-count" style="color: #9ca3af;">0</div>
+                    <div class="stat-footer" style="color: var(--text-muted);">Saíram da base atual</div>
                 </div>
             </section>
 
             <!-- GRÁFICO E PERFORMANCE -->
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <div style="display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
                 <!-- Evolução da Criticidade -->
-                <div class="main-card">
+                <div class="main-card" style="flex: 1; min-width: 450px;">
                     <div class="card-header">
                         <h3><span class="header-icon">📉</span> Curva de Recuperação de Abastecimento</h3>
                     </div>
@@ -140,52 +279,51 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Performance por Segmento -->
-                <div class="main-card">
-                    <div class="card-header">
-                        <h3><span class="header-icon">🏆</span> Top Recuperadores</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="performance-list" id="performance-list">
-                            <!-- Injetado via JS -->
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- TABELA DE DETALHAMENTO -->
             <div class="main-card">
-                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3><span class="header-icon">📋</span> Detalalhamento de Movimentação por Item</h3>
-                    <div class="table-filters" style="display: flex; gap: 1rem;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <h3><span class="header-icon">📋</span> Detalhamento de Movimentação por Item</h3>
+                    <div class="table-filters" style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <select id="evolution-filter" class="premium-select">
                             <option value="all">Todos os Itens</option>
-                            <option value="improved">Apenas Melhorias</option>
-                            <option value="worsened">Apenas Pioras</option>
-                            <option value="stable">Apenas Estáveis</option>
+                            <option value="improved">📈 Apenas Melhorias</option>
+                            <option value="improved_rupture">🚨 Críticos Recuperados</option>
+                            <option value="improved_attention">⚡ Atenções Recuperadas</option>
+                            <option value="improved_suggest">⚠️ Sugestões Recuperadas</option>
+                            <option value="worsened">📉 Apenas Pioras</option>
+                            <option value="stable">⚖️ Apenas Estáveis</option>
+                            <option value="relapsed">🔄 Apenas Reincidentes</option>
+                            <option value="new_items">✨ Apenas Novos Itens</option>
+                            <option value="discontinued">🗑️ Apenas Sem Giro</option>
                         </select>
                         <input type="text" id="table-search" placeholder="Buscar código ou descrição..." class="premium-input">
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-container" style="max-height: 600px;">
-                        <table id="evolution-table">
-                            <thead>
-                                <tr>
-                                    <th>Cód.</th>
-                                    <th>Descrição</th>
-                                    <th>Fornecedor</th>
-                                    <th style="text-align: center;">Base</th>
-                                    <th style="text-align: center;">Atual</th>
-                                    <th style="text-align: center;">Evolução</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="evolution-table-body">
-                                <!-- Injetado via JS -->
-                            </tbody>
-                        </table>
+                    <div class="table-container">
+                        <div class="table-wrapper" style="max-height: 600px; overflow-y: auto;">
+                            <table id="evolution-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cód.</th>
+                                        <th>Descrição</th>
+                                        <th>Fornecedor</th>
+                                        <th style="text-align: center;">Base</th>
+                                        <th style="text-align: center;">Atual</th>
+                                        <th style="text-align: center;">Evolução</th>
+                                        <th style="text-align: center;">Status</th>
+                                        <th>Motivo</th>
+                                        <th>Resultado</th>
+                                        <th style="text-align: center;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evolution-table-body">
+                                    <!-- Injetado via JS -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,12 +343,101 @@
                     ...\Comprasbrasil - Compras\Análise Rupturas
                 </code>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 3rem; font-style: italic;">
-                    O sistema utilizará o arquivo <strong>"07.05.2026.xlsx"</strong> como a base histórica fixa para medir sua eficiência.
+                    O primeiro arquivo da pasta em ordem cronológica será definido automaticamente como a **Base Histórica**.
                 </p>
-                <label for="folder-upload-welcome" class="btn btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem;">
+                <label for="folder-upload-welcome" class="btn btn-primary" style="padding: 1.2rem 3rem; font-size: 1.1rem; cursor: pointer;">
                     <span class="btn-icon">📁</span> Iniciar Análise Evolutiva
                 </label>
                 <input type="file" id="folder-upload-welcome" webkitdirectory directory multiple hidden>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico Detalhado do Item -->
+    <div id="item-history-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="max-width: 700px; width: 90%; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: white; display: flex; flex-direction: column; max-height: 85vh; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; color: #6366f1; font-size: 1.5rem;"><span class="header-icon">📊</span> Histórico de Abastecimento</h2>
+                <button id="close-item-history-btn" class="close-btn" style="background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; flex: 1;">
+                <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; background: rgba(255, 255, 255, 0.02); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="font-size: 2.2rem; filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.3));">🔩</div>
+                    <div>
+                        <h3 id="hist-item-code" style="margin: 0; font-size: 1.4rem; font-weight: bold; color: white; font-family: 'Outfit', sans-serif;">---</h3>
+                        <p id="hist-item-desc" style="margin: 4px 0 0 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;">---</p>
+                    </div>
+                </div>
+
+                <!-- Stats summary for the item -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div style="background: rgba(244, 63, 94, 0.05); border: 1px solid rgba(244, 63, 94, 0.15); padding: 1.2rem; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 0.75rem; color: #fb7185; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Estado Crítico acumulado</div>
+                            <div id="hist-critical-snapshots" style="font-size: 1.8rem; font-weight: bold; margin-top: 5px; font-family: 'Outfit', sans-serif; color: #fb7185;">---</div>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; border-top: 1px solid rgba(244, 63, 94, 0.1); padding-top: 8px;">
+                            Ruptura: <span id="hist-rupture-count" style="color: #fb7185; font-weight: bold;">0</span> | 
+                            Atenção: <span id="hist-attention-count" style="color: #f59e0b; font-weight: bold;">0</span> | 
+                            Sugestão: <span id="hist-suggest-count" style="color: #818cf8; font-weight: bold;">0</span>
+                        </div>
+                    </div>
+                    <div style="background: rgba(52, 211, 153, 0.05); border: 1px solid rgba(52, 211, 153, 0.15); padding: 1.2rem; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 0.75rem; color: #34d399; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Ações & Estabilidade</div>
+                            <div style="font-size: 1.05rem; font-weight: 600; margin-top: 8px; color: white; display: flex; justify-content: space-between;">
+                                <span>🔄 Recuperações:</span> <span id="hist-recovered-count" style="color: #34d399; font-weight: bold;">0</span>
+                            </div>
+                            <div style="font-size: 1.05rem; font-weight: 600; margin-top: 4px; color: white; display: flex; justify-content: space-between;">
+                                <span>⚠️ Pioras:</span> <span id="hist-worsened-count" style="color: #f43f5e; font-weight: bold;">0</span>
+                            </div>
+                        </div>
+                        <div id="hist-reincidente-badge" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); font-size: 0.65rem; color: #c084fc; font-weight: 800; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px; text-align: center; display: none;">
+                            🚨 ITEM REINCIDENTE
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline visualizer for the item -->
+                <h4 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.05rem; font-family: 'Outfit', sans-serif; display: flex; align-items: center; gap: 8px;">
+                    <span>🕰️</span> Linha do Tempo Histórica
+                </h4>
+                <div id="item-timeline-list" style="display: flex; flex-direction: column; gap: 8px; padding-right: 5px; max-height: 250px;">
+                    <!-- Snapshots list generated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Informação de Cálculos -->
+    <div id="calc-info-modal" onclick="this.classList.remove('active'); setTimeout(()=>this.style.display='none', 300);" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px; width: 90%; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; color: white; display: flex; flex-direction: column; max-height: 85vh; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; color: #6366f1; font-size: 1.5rem;"><span class="header-icon">ℹ️</span> Como os cálculos são feitos?</h2>
+                <button type="button" onclick="const m=document.getElementById('calc-info-modal'); m.classList.remove('active'); setTimeout(()=>m.style.display='none', 300);" class="close-btn" style="background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; line-height: 1;">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem; overflow-y: auto; flex: 1; font-size: 0.9rem; line-height: 1.5; color: #cbd5e1;">
+                <h4 style="color: #fff; margin-top: 0; font-family: 'Outfit', sans-serif;">1. Classificação de Criticidade</h4>
+                <p>O nível de criticidade do item é calculado com base na cobertura do estoque e encomendas frente à média de vendas:</p>
+                <ul style="margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem 1rem 1rem 2.5rem; border-radius: 8px;">
+                    <li><strong style="color: #fb7185;">Ruptura:</strong> Média Venda &gt; Estoque Disponível (Estoque + Encomendas)</li>
+                    <li><strong style="color: #f59e0b;">Atenção:</strong> (Média Venda × 2) &gt; Estoque Disponível</li>
+                    <li><strong style="color: #818cf8;">Sugestão:</strong> (Média Venda × 3) &gt; Estoque Disponível</li>
+                    <li><strong style="color: #34d399;">Seguro:</strong> Estoque cobre 3 meses ou mais.</li>
+                </ul>
+
+                <h4 style="color: #fff; font-family: 'Outfit', sans-serif;">2. Taxa de Recuperação</h4>
+                <p>Mede a porcentagem de itens (que estavam em nível de ruptura/atenção/sugestão na data base) que apresentaram melhoria na criticidade (ex: passaram de Ruptura para Atenção, ou de Atenção para Seguro) na data atual.</p>
+                <p style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; text-align: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.1);"><code>(Itens Melhorados / Total de Itens Críticos na Base) × 100</code></p>
+
+                <h4 style="color: #fff; font-family: 'Outfit', sans-serif;">3. Sucesso por Categoria (Ruptura/Atenção/Sugestão)</h4>
+                <p>Para cada nível de criticidade original, mostra a porcentagem que efetivamente melhorou. Exemplo: De todas as <em>Rupturas</em> da base, quantos % melhoraram.</p>
+
+                <h4 style="color: #fff; font-family: 'Outfit', sans-serif; margin-top: 1.5rem;">4. Piora Operacional e Reincidentes</h4>
+                <ul style="margin-bottom: 0; background: rgba(0,0,0,0.2); padding: 1rem 1rem 1rem 2.5rem; border-radius: 8px;">
+                    <li style="margin-bottom: 8px;"><strong style="color: #f43f5e;">Piora Operacional:</strong> Itens cuja criticidade aumentou entre a data base e a data atual (ex: de Seguro para Ruptura).</li>
+                    <li><strong style="color: #a855f7;">Itens Reincidentes:</strong> Itens que em algum momento do histórico saíram de um estado crítico para Seguro, mas voltaram a ficar críticos.</li>
+                </ul>
             </div>
         </div>
     </div>

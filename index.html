@@ -50,31 +50,30 @@
                 </div>
             </div>
             <div class="header-actions">
-                <a href="https://portalbrasil.brasildosparafusos.com.br/compras/" class="btn btn-secondary">
-                    <span class="btn-icon">🏠</span> Voltar ao Menu
-                </a>
+                <div style="display: flex; gap: 0.8rem; align-items: center;">
+                    <a href="https://portalbrasil.brasildosparafusos.com.br/compras/" class="btn btn-secondary">
+                        <span class="btn-icon">🏠</span> Voltar ao Menu
+                    </a>
 
-                <label for="buyer-upload" class="btn btn-secondary" id="buyer-label"
-                    title="Vincular códigos de produtos aos nomes dos compradores">
-                    <span class="step-badge-header step-1-badge">1</span>
-                    <span class="btn-icon">👤</span> Vincular Compradores
-                </label>
-                <input type="file" id="buyer-upload" accept=".xlsx, .xls" hidden>
+                    <label for="buyer-upload" class="btn btn-secondary" id="buyer-label"
+                        title="Vincular códigos de produtos aos nomes dos compradores">
+                        <span class="step-badge-header step-1-badge">1</span>
+                        <span class="btn-icon">👤</span> Vincular Compradores
+                    </label>
+                    <input type="file" id="buyer-upload" accept=".xlsx, .xls" hidden>
 
-                <label for="file-upload" class="btn btn-primary" id="upload-label">
-                    <span class="step-badge-header step-2-badge">2</span>
-                    <span class="btn-icon">📁</span> Importar Planilha
-                </label>
-                <input type="file" id="file-upload" accept=".xlsx, .xls, .csv" hidden>
+                    <label for="file-upload" class="btn btn-primary" id="upload-label">
+                        <span class="step-badge-header step-2-badge">2</span>
+                        <span class="btn-icon">📁</span> Importar Planilha
+                    </label>
+                    <input type="file" id="file-upload" accept=".xlsx, .xls, .csv" hidden>
+
+                    <a href="entradas.html" class="btn btn-secondary">
+                        <span class="btn-icon">📑</span> Análise de Entradas
+                    </a>
+                </div>
 
 
-                <a href="rupturas.html" class="btn btn-secondary" style="position: relative; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.3);">
-                    <span class="btn-icon">📈</span> Análise Evolutiva
-                    <span style="position: absolute; top: -10px; right: -10px; background: linear-gradient(to right, #6366f1, #a855f7); color: white; font-size: 0.55rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4); white-space: nowrap; z-index: 10;">Novo Spec</span>
-                </a>
-                <a href="entradas.html" class="btn btn-secondary">
-                    <span class="btn-icon">📑</span> Análise de Entradas
-                </a>
             </div>
         </header>
 
@@ -135,7 +134,7 @@
                     <div
                         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; height: 100%;">
                         <div class="stat-card urgent clickable-card" id="risk-card" data-filter="buy" style="cursor: pointer;">
-                            <span class="stat-label">Ruptura (1m)</span>
+                            <span class="stat-label">Crítico (1m)</span>
                             <span class="stat-value" id="to-buy-count">0</span>
                             <span class="stat-sub" id="buy-value"
                                 style="font-size: 0.85rem; color: var(--danger); margin-top: -2px; opacity: 0.8;">R$
@@ -213,7 +212,7 @@
             <div class="criteria-info" id="criteria-legend"
                 style="display: none; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
                 <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
-                    <span class="badge badge-buy">🚨 RISCO RUPTURA</span>
+                    <span class="badge badge-buy">🚨 RISCO CRÍTICO</span>
                     <span class="badge badge-warn">⚡ ATENÇÃO</span>
                     <span class="badge badge-caution">⚠️ SUGESTÃO COMPRA</span>
                     <span class="trend-indicator trend-up" title="Tendência de Alta">▲</span>
@@ -239,65 +238,60 @@
                         </div>
 
                         <div class="benefits-container" style="margin: 2rem auto; width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center;">
-                            <h3 style="color: #fff; font-size: 1.1rem; font-weight: 500; text-align: center; margin-bottom: 2.5rem; font-family: 'Outfit', sans-serif; letter-spacing: 2px; opacity: 0.8; text-transform: uppercase;">
-                                🗺️ Mapa de Funcionalidades
-                            </h3>
-                            
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; width: 100%; justify-content: center;">
-                                <!-- Coluna Concluídos -->
-                                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); transition: all 0.3s ease;">
-                                    <h4 style="color: #10b981; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; font-family: 'Outfit', sans-serif; font-weight: 700; opacity: 0.9;">
-                                        <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);"></span> CONCLUÍDO
-                                    </h4>
-                                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.9rem;">
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Dashboard de Ruptura:</strong> Alertas críticos e cobertura de estoque.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Gestão de Capital:</strong> Cálculo de valor para reposição imediata.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Fidelidade e Giro:</strong> Análise de recorrência (17% a 100%).</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Análise de Entradas:</strong> Recebimentos e performance operacional.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Filtros Avançados:</strong> Seleção múltipla via modal inteligente.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                                            <i class="fas fa-check" style="color: #10b981; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Exportação:</strong> Gerador de planilhas formatadas para ERP.</div>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <!-- Coluna Em Construção -->
-                                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); opacity: 0.9;">
+                            <div style="display: flex; width: 100%; justify-content: center; max-width: 600px;">
+                                <!-- Projetos em Teste -->
+                                <div style="width: 100%; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); opacity: 0.9;">
                                     <h4 style="color: #3b82f6; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; font-family: 'Outfit', sans-serif; font-weight: 700; opacity: 0.9;">
                                         <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);"></span> EM CONSTRUÇÃO
                                     </h4>
-                                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.9rem;">
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
-                                            <i class="fas fa-circle-notch fa-spin" style="color: #3b82f6; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Módulo Detalhado:</strong> Visão item a item com impacto financeiro.</div>
+                                    <style>
+                                        .premium-lab-item {
+                                            display: flex;
+                                            gap: 12px;
+                                            font-size: 0.85rem;
+                                            color: #94a3b8;
+                                            line-height: 1.4;
+                                            align-items: start;
+                                            padding: 1.2rem;
+                                            border-radius: 12px;
+                                            border: 1px solid rgba(255,255,255,0.02);
+                                            background: rgba(0,0,0,0.1);
+                                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                                        }
+                                        .premium-lab-item:hover {
+                                            border-color: rgba(59, 130, 246, 0.6);
+                                            background: rgba(59, 130, 246, 0.04);
+                                            box-shadow: 0 0 25px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.15);
+                                            transform: translateY(-2px);
+                                        }
+                                    </style>
+                                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
+                                        <li class="premium-lab-item">
+                                            <span style="font-size: 1.2rem; margin-top: 2px;">📈</span>
+                                            <div style="flex: 1;">
+                                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                                                    <strong style="color: #e2e8f0; font-size: 0.95rem;">Análise Evolutiva</strong>
+                                                    <span style="font-size: 0.6rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3); font-weight: 800; letter-spacing: 0.5px;">BETA</span>
+                                                </div>
+                                                <p style="margin: 0 0 0.8rem 0; opacity: 0.9;">Monitoramento histórico mensal da saúde do estoque, acompanhando a melhoria ou piora dos itens críticos.</p>
+                                                <a href="rupturas.html" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-color: rgba(59, 130, 246, 0.4); color: #60a5fa; display: inline-flex; width: auto; background: rgba(59, 130, 246, 0.05);">
+                                                    🧪 Acessar Laboratório
+                                                </a>
+                                            </div>
                                         </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
-                                            <i class="fas fa-history" style="color: #3b82f6; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Histórico e Evolução:</strong> Timeline mensal da saúde do estoque.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
-                                            <i class="fas fa-exchange-alt" style="color: #3b82f6; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>Sugestão de Substitutos:</strong> Cruzamento de itens equivalentes.</div>
-                                        </li>
-                                        <li style="display: flex; gap: 12px; font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
-                                            <i class="fas fa-sync" style="color: #3b82f6; font-size: 0.7rem; margin-top: 4px;"></i>
-                                            <div><strong>OneDrive Sync:</strong> Sincronização automática de relatórios.</div>
+                                        
+                                        <li class="premium-lab-item">
+                                            <span style="font-size: 1.2rem; margin-top: 2px;">🔄</span>
+                                            <div style="flex: 1;">
+                                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                                                    <strong style="color: #e2e8f0; font-size: 0.95rem;">Análise de 6 Meses</strong>
+                                                    <span style="font-size: 0.6rem; background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3); font-weight: 800; letter-spacing: 0.5px;">BETA</span>
+                                                </div>
+                                                <p style="margin: 0 0 0.8rem 0; opacity: 0.9;">Visão detalhada do giro semestral, verificando a assiduidade de vendas item a item.</p>
+                                                <a href="giro.html" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; border-color: rgba(59, 130, 246, 0.4); color: #60a5fa; display: inline-flex; width: auto; background: rgba(59, 130, 246, 0.05);">
+                                                    🧪 Acessar Laboratório
+                                                </a>
+                                            </div>
                                         </li>
                                     </ul>
                                     <div style="margin-top: 2rem; padding: 0.8rem; background: rgba(59, 130, 246, 0.05); border-radius: 12px; font-size: 0.7rem; color: #60a5fa; text-align: center; border: 1px solid rgba(59, 130, 246, 0.1);">
@@ -333,7 +327,7 @@
                         </div>
                         <div class="filters">
                             <button class="filter-btn active" data-filter="all">Todos</button>
-                            <button class="filter-btn" data-filter="buy">🚨 Ruptura</button>
+                            <button class="filter-btn" data-filter="buy">🚨 Crítico</button>
                             <button class="filter-btn" data-filter="attention">⚡ Atenção</button>
                             <button class="filter-btn" data-filter="suggest">⚠️ Sugestão</button>
                             <button class="filter-btn" data-filter="has-order">📦 Com Encomenda</button>
@@ -430,7 +424,7 @@
 
                     <div class="rule-card">
                         <span class="badge badge-buy" style="margin-bottom: 10px; display: inline-block;">🚨 RISCO
-                            RUPTURA (1m)</span>
+                            CRÍTICO (1m)</span>
                         <h3>Alerta Crítico</h3>
                         <p>Itens que não possuem estoque suficiente para durar <strong>1 mês</strong> de vendas se
                             baseando no histórico.</p>
@@ -438,7 +432,7 @@
                             <strong>⚠️ Condição de Entrada:</strong><br>
                             <code>(Disp. &lt; Vendas Médias * 1) AND (Recorrência &gt; 17%)</code><br><br>
                             <strong>💰 Capital Alvo Projetado:</strong><br>
-                            <code>Média Venda × 1 mês × Preço de Reposição</code>
+                            <code>Média Venda × 3 × 1 mês × Preço de Reposição</code>
                         </div>
                     </div>
 
@@ -452,7 +446,7 @@
                             <strong>⚠️ Condição de Entrada:</strong><br>
                             <code>(Disp. &lt; Vendas Médias * 2) AND (Recorrência &gt; 17%)</code><br><br>
                             <strong>💰 Capital Alvo Projetado:</strong><br>
-                            <code>Média Venda × 2 meses × Preço de Reposição</code>
+                            <code>Média Venda × 3 × 2 meses × Preço de Reposição</code>
                         </div>
                     </div>
 
@@ -466,7 +460,7 @@
                             <strong>⚠️ Condição de Entrada:</strong><br>
                             <code>(Disp. &lt; Vendas Médias * 3) AND (Recorrência &gt; 17%)</code><br><br>
                             <strong>💰 Capital Alvo Projetado:</strong><br>
-                            <code>Média Venda × 3 meses × Preço de Reposição</code>
+                            <code>Média Venda × 3 × 3 meses × Preço de Reposição</code>
                         </div>
                     </div>
 

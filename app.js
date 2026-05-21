@@ -726,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div class="economic-header">
                                     <span class="economic-icon">💡</span>
                                     <div class="economic-titles">
-                                        <span class="economic-badge">Opção Econômica</span>
+                                        <span class="economic-badge">Alternativa</span>
                                         <span class="economic-subtitle">(Versão Polida/OX)</span>
                                     </div>
                                 </div>
@@ -837,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const safeItems = data.filter(i => i.situacao === 'seguro');
         const orderItems = data.filter(i => i.temEncomenda);
 
-        const sumValAlerts = (items, m) => items.reduce((acc, i) => acc + ((parseFloat(i.medVenda) || 0) * m * (parseFloat(i.custoRaw) || 0)), 0);
+        const sumValAlerts = (items, m) => items.reduce((acc, i) => acc + ((parseFloat(i.medVenda) || 0) * 3 * m * (parseFloat(i.custoRaw) || 0)), 0);
         const sumValStock = (items) => items.reduce((acc, i) => acc + (i.estoque * (parseFloat(i.custoRaw) || 0)), 0);
         const sumOrderVal = (items) => items.reduce((acc, i) => acc + (i.encomendas * (parseFloat(i.custoRaw) || 0)), 0);
 
@@ -933,7 +933,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (i.situacao === 'ruptura') m = 1;
                         else if (i.situacao === 'atencao') m = 2;
                         else if (i.situacao === 'sugestao') m = 3;
-                        return acc + ((parseFloat(i.medVenda) || 0) * m * (parseFloat(i.custoRaw) || 0));
+                        return acc + ((parseFloat(i.medVenda) || 0) * 3 * m * (parseFloat(i.custoRaw) || 0));
                     }, 0);
                 }
                 
@@ -994,12 +994,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateSparkline(history, labels) {
         if (!history || history.length === 0) return '<span style="color:var(--text-muted); font-size:0.7rem;">Sem histórico</span>';
         
-        const width = 650;
-        const height = 100;
-        const leftPadding = 30;
-        const rightPadding = 50;  // extra espaço à direita para não cortar o último label
-        const topPadding = 28;
-        const bottomPadding = 22;
+        const width = 750;
+        const height = 180;
+        const leftPadding = 40;
+        const rightPadding = 55;  // extra espaço à direita para não cortar o último label
+        const topPadding = 35;
+        const bottomPadding = 32;
         
         const max = Math.max(...history, 5);
         const drawableWidth = width - leftPadding - rightPadding;
@@ -1027,13 +1027,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <path d="${areaPath}" fill="url(#sparklineGradientDetail)" />
                 <path d="${linePath}" fill="none" stroke="var(--info)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
                 ${points.map(p => `
-                    <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="var(--info)" class="spark-dot">
+                    <circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--info)" class="spark-dot">
                         <title>${p.label}: ${p.val}</title>
                     </circle>
-                    <text x="${p.x}" y="${p.y - 12}" text-anchor="middle" font-size="10" font-weight="bold" fill="white" style="font-family: 'Outfit', sans-serif;">
+                    <text x="${p.x}" y="${p.y - 14}" text-anchor="middle" font-size="12" font-weight="bold" fill="white" style="font-family: 'Outfit', sans-serif;">
                         ${p.val}
                     </text>
-                    <text x="${p.x}" y="${height - 4}" text-anchor="middle" font-size="9" fill="var(--text-muted)" style="font-family: 'Outfit', sans-serif;">
+                    <text x="${p.x}" y="${height - 6}" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--text-muted)" style="font-family: 'Outfit', sans-serif;">
                         ${p.label}
                     </text>
                 `).join('')}
@@ -1176,16 +1176,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const ctx = document.getElementById('purchase-pie-chart').getContext('2d');
         
+        // Dynamic colors for doughnut slices based on active status filters
+        const statusFilters = activeFilters.filter(f => ['buy', 'attention', 'suggest', 'safe'].includes(f));
+        const baseColors = ['#fb7185', '#f59e0b', '#818cf8', '#34d399'];
+        const filterKeys = ['buy', 'attention', 'suggest', 'safe'];
+        const backgroundColors = baseColors.map((color, idx) => {
+            const key = filterKeys[idx];
+            if (statusFilters.length === 0) return color;
+            return statusFilters.includes(key) ? color : color + '22'; // 22 is ~13% opacity in hex
+        });
+
         const chartData = {
             labels: ['Ruptura', 'Atenção', 'Sugestão', 'Seguro'],
             datasets: [{
                 data: [buyCount, attentionCount, suggestCount, okCount],
-                backgroundColor: [
-                    '#fb7185', // Rose
-                    '#f59e0b', // Amber
-                    '#818cf8', // Indigo
-                    '#34d399'  // Emerald
-                ],
+                backgroundColor: backgroundColors,
+                hoverBackgroundColor: baseColors,
                 borderColor: '#0f172a',
                 borderWidth: 3,
                 hoverOffset: 20,
@@ -1237,6 +1243,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     cutout: '78%',
                     spacing: 2,
                     layout: { padding: 10 },
+                    onClick: (e) => {
+                        const elements = myChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const filters = ['buy', 'attention', 'suggest', 'safe'];
+                            const filter = filters[index];
+                            if (filter) {
+                                isRecurrenceActive = (filter !== 'safe');
+                                activeRecFilter = null;
+                                document.querySelectorAll('.rec-card').forEach(c => c.style.boxShadow = 'none');
+                                toggleFilter(filter, 'card');
+                            }
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        if (event && event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    },
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -1277,16 +1302,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const supplierCtx = document.getElementById('supplier-risk-chart').getContext('2d');
         
         const currentSuppStats = {};
-        data.filter(i => i.situacao !== 'seguro').forEach(i => {
+        data.filter(i => {
+            if (statusFilters.length > 0) {
+                if (i.situacao === 'ruptura' && statusFilters.includes('buy')) return true;
+                if (i.situacao === 'atencao' && statusFilters.includes('attention')) return true;
+                if (i.situacao === 'sugestao' && statusFilters.includes('suggest')) return true;
+                if (i.situacao === 'seguro' && statusFilters.includes('safe')) return true;
+                return false;
+            }
+            return i.situacao !== 'seguro'; // Default: exclude seguro
+        }).forEach(i => {
             currentSuppStats[i.fornecedor] = (currentSuppStats[i.fornecedor] || 0) + 1;
         });
 
+        // Dynamic labels: top 15 suppliers for currently filtered view, sorted descending
+        const dynamicSupplierLabels = Object.entries(currentSuppStats)
+            .filter(entry => entry[1] > 0)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15)
+            .map(s => s[0]);
+        const supplierLabelsToShow = dynamicSupplierLabels.length > 0 ? dynamicSupplierLabels : fixedSupplierLabels;
+
         const supplierChartData = {
-            labels: fixedSupplierLabels,
+            labels: supplierLabelsToShow,
             datasets: [{
                 label: 'Sugerido/Risco',
-                data: fixedSupplierLabels.map(label => currentSuppStats[label] || 0),
-                backgroundColor: fixedSupplierLabels.map(label => 
+                data: supplierLabelsToShow.map(label => currentSuppStats[label] || 0),
+                backgroundColor: supplierLabelsToShow.map(label => 
                     selectedSuppliers.includes(label) ? '#818cf8' : 'rgba(99, 102, 241, 0.4)'
                 ),
                 borderColor: '#6366f1',
@@ -1335,7 +1377,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     },
                     onHover: (event, chartElement) => {
-                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        if (event && event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
                     },
                     plugins: {
                         legend: { display: false },
@@ -1369,16 +1413,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const groupCtx = document.getElementById('group-bar-chart').getContext('2d');
         
         const currentGroupStats = {};
-        data.filter(i => i.situacao !== 'seguro').forEach(i => {
+        data.filter(i => {
+            if (statusFilters.length > 0) {
+                if (i.situacao === 'ruptura' && statusFilters.includes('buy')) return true;
+                if (i.situacao === 'atencao' && statusFilters.includes('attention')) return true;
+                if (i.situacao === 'sugestao' && statusFilters.includes('suggest')) return true;
+                if (i.situacao === 'seguro' && statusFilters.includes('safe')) return true;
+                return false;
+            }
+            return i.situacao !== 'seguro'; // Default: exclude seguro
+        }).forEach(i => {
             currentGroupStats[i.grupo] = (currentGroupStats[i.grupo] || 0) + 1;
         });
 
+        // Dynamic labels: top 15 groups for currently filtered view, sorted descending
+        const dynamicGroupLabels = Object.entries(currentGroupStats)
+            .filter(entry => entry[1] > 0)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15)
+            .map(g => g[0]);
+        const groupLabelsToShow = dynamicGroupLabels.length > 0 ? dynamicGroupLabels : fixedGroupLabels;
+
         const groupDataDetails = {
-            labels: fixedGroupLabels,
+            labels: groupLabelsToShow,
             datasets: [{
                 label: 'Sugerido/Risco',
-                data: fixedGroupLabels.map(label => currentGroupStats[label] || 0),
-                backgroundColor: fixedGroupLabels.map(label => 
+                data: groupLabelsToShow.map(label => currentGroupStats[label] || 0),
+                backgroundColor: groupLabelsToShow.map(label => 
                     selectedGroups.includes(label) ? '#f59e0b' : 'rgba(245, 158, 11, 0.4)'
                 ),
                 borderColor: '#f59e0b',
@@ -1426,7 +1487,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     },
                     onHover: (event, chartElement) => {
-                        event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        if (event && event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
                     },
                     plugins: {
                         legend: { display: false },

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
+    <title>Análise de Giro de 6 Meses | Brasil dos Parafusos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Custom styling to enhance columns and visual cues of giro dashboard -->
+    <style>
+        .giro-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .giro-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .giro-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glassmorphic charts grid */
+        .giro-charts-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .giro-chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex: 1 1 300px;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform var(--transition-mid), border-color var(--transition-mid);
+        }
+
+        .giro-chart-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .giro-chart-card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .chart-container-giro {
+            position: relative;
+            flex-grow: 1;
+            height: 280px;
+            width: 100%;
+        }
+
+        /* Badge styles for Comprado (Sim / Não) */
+        .badge-sim {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .badge-nao {
+            background: rgba(244, 63, 94, 0.12);
+            color: #fb7185;
+            border: 1px solid rgba(244, 63, 94, 0.25);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* Badge styles for Recorrência */
+        .badge-recur-high {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-recur-med {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .badge-recur-low {
+            background: rgba(148, 163, 184, 0.1);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* Highlight row on hover or matching state */
+        .repost-row {
+            border-left: 3px solid var(--success) !important;
+        }
+        
+        .no-repost-row {
+            border-left: 3px solid var(--danger) !important;
+        }
+
+        /* Guide layout inside upload zone */
+        .excel-guide-table {
+            width: 100%;
+            margin: 1.5rem auto 0;
+            max-width: 750px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            border-collapse: collapse;
+        }
+
+        .excel-guide-table th, .excel-guide-table td {
+            padding: 8px 12px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .excel-guide-table th {
+            color: var(--primary);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .excel-guide-table td {
+            color: var(--text-muted);
+        }
+    </style>
+
+    <!-- Libraries -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner-container">
+                <div class="spinner-main"></div>
+                <div class="spinner-accent"></div>
+            </div>
+            <div class="loading-text">
+                <h3>Analisando Levantamento 6 Meses</h3>
+                <p>Processando códigos, quantidades e calculando taxas de giro...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <div class="logo-area">
+                <div class="header-titles">
+                    <h1>Análise de Giro <small>6 Meses</small></h1>
+                    <span class="sector-tag">Setor de Compras</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="btn btn-secondary">
+                    <span class="btn-icon">📦</span> Gestor de Estoque
+                </a>
+                <div class="dropdown">
+                    <a href="rupturas.html" class="btn btn-secondary" style="position: relative; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); border: 1px solid rgba(168, 85, 247, 0.3);">
+                        <span class="btn-icon">📈</span> Análise Evolutiva
+                        <span style="position: absolute; top: -10px; right: -10px; background: linear-gradient(to right, #6366f1, #a855f7); color: white; font-size: 0.55rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(168, 85, 247, 0.4); white-space: nowrap; z-index: 10;">Novo Spec</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="giro.html" class="dropdown-item dropdown-item-giro">
+                            <span class="btn-icon">🔄</span> Análise de 6 Meses
+                        </a>
+                    </div>
+                </div>
+                <a href="entradas.html" class="btn btn-secondary">
+                    <span class="btn-icon">📑</span> Análise de Entradas
+                </a>
+            </div>
+        </header>
+
+        <main>
+            <!-- Welcome View (Dropzone upload) -->
+            <div id="welcome-view" class="welcome-board">
+                <div class="welcome-watermark">Desenvolvido por Cassyano</div>
+                <div class="welcome-content">
+                    <div class="welcome-header">
+                        <div class="main-welcome-logo">
+                            <img src="logo-parafuso.png" alt="Brasil do Parafusos">
+                            <span class="company-name">Brasil dos Parafusos</span>
+                        </div>
+                        <h2>Análise de Itens que Giraram nos Últimos 6 Meses</h2>
+                        <p>Importe a planilha <strong>Levantamento 6 meses</strong> para visualizar taxas de reposição, quantidades e valores movimentados.</p>
+                    </div>
+
+                    <!-- Beautiful Interactive Dropzone -->
+                    <div class="featured-wip-card" style="max-width: 850px; margin: 0 auto 2rem; cursor: pointer;" onclick="document.getElementById('file-upload').click();">
+                        <div class="wip-status">
+                            <span class="pulse-dot"></span> PRONTO PARA IMPORTAR
+                        </div>
+                        <div class="featured-content">
+                            <div class="featured-icon-wrapper">
+                                <span class="featured-icon">🔄</span>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <div class="featured-info">
+                                <h3>Selecione a Planilha de 6 Meses</h3>
+                                <p>Clique aqui ou arraste o arquivo <strong>"Levantamento 6 meses.xlsx"</strong> localizado na sua Área de Trabalho para iniciar o processamento instantâneo.</p>
+                                <span class="f-tag">Suporta .xlsx e .xls</span>
+                                <span class="f-tag">Processamento local seguro</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="file" id="file-upload" accept=".xlsx, .xls, .csv" hidden>
+
+                    <!-- Guide table displaying columns expected -->
+                    <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 1.5rem; font-weight: 500;">
+                        ESTRUTURA DA PLANILHA ESPERADA:
+                    </p>
+                    <table class="excel-guide-table">
+                        <thead>
+                            <tr>
+                                <th>Coluna A</th>
+                                <th>Coluna B</th>
+                                <th>Coluna C</th>
+                                <th>Coluna D</th>
+                                <th>Coluna E</th>
+                                <th>Coluna F</th>
+                                <th>Coluna G</th>
+                                <th>Coluna H</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Código do produto</strong></td>
+                                <td><strong>Descrição</strong></td>
+                                <td><strong>UN (Medida)</strong></td>
+                                <td><strong>Comprado (Sim/Não)</strong></td>
+                                <td><strong>Qtd comprada</strong></td>
+                                <td><strong>Fornecedor</strong></td>
+                                <td><strong>Valor (Gasto)</strong></td>
+                                <td><strong>Recorrência (%)</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Ex: 2715</td>
+                                <td>Ex: ABRACADEIRA 14mm</td>
+                                <td>Ex: PC</td>
+                                <td>Ex: Sim / Não</td>
+                                <td>Ex: 80</td>
+                                <td>Ex: METALMATRIX</td>
+                                <td>Ex: R$ 341,83</td>
+                                <td>Ex: 83,3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Dashboard View (Shown after import) -->
+            <div id="dashboard-view" style="display: none;">
+                
+                <!-- Summary Stats Cards Grid -->
+                <section class="giro-grid">
+                    <!-- Total Items Rotated -->
+                    <div class="stat-card info">
+                        <span class="stat-label">Itens que Giraram</span>
+                        <span class="stat-value" id="total-items">0</span>
+                        <p style="color: var(--text-muted); font-size: 0.78rem;" id="total-items-value">
+                            Valor total movimentado: R$ 0,00
+                        </p>
+                    </div>
+
+                    <!-- Items Replenished (Sim) -->
+                    <div class="stat-card success">
+                        <span class="stat-label">Itens Repostos (Sim)</span>
+                        <span class="stat-value" id="replenished-count" style="color: var(--success);">0</span>
+                        <p style="color: var(--success); font-size: 0.78rem; font-weight: 600;" id="replenished-value">
+                            Valor reposto: R$ 0,00
+                        </p>
+                    </div>
+
+                    <!-- Items Not Replenished (Não) -->
+                    <div class="stat-card urgent">
+                        <span class="stat-label">Não Repostos (Não)</span>
+                        <span class="stat-value" id="non-replenished-count" style="color: var(--danger);">0</span>
+                        <p style="color: var(--danger); font-size: 0.78rem; font-weight: 600;" id="non-replenished-value">
+                            Valor sem giro/reposição: R$ 0,00
+                        </p>
+                    </div>
+
+                    <!-- Replenishment Rate (%) -->
+                    <div class="stat-card warning" style="border-left: 4px solid var(--warning);">
+                        <span class="stat-label">Taxa de Reposição</span>
+                        <span class="stat-value" id="replenish-rate" style="color: var(--warning);">0,0%</span>
+                        <p style="color: var(--text-muted); font-size: 0.78rem;">
+                            Recorrência Média: <strong id="avg-recurrence" style="color: #fff;">0,0%</strong>
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Premium Graphics Grid -->
+                <section class="giro-charts-row">
+                    <!-- Replenishment Status Distribution (Pie/Doughnut) -->
+                    <div class="giro-chart-card" style="flex: 1 1 280px;">
+                        <h3>📊 Status de Reposição (Giro)</h3>
+                        <div class="chart-container-giro">
+                            <canvas id="replenish-doughnut"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Suppliers by Value of Replenished Items (Horizontal Bar) -->
+                    <div class="giro-chart-card" style="flex: 1.5 1 350px;">
+                        <h3>🤝 Top 10 Fornecedores (Valor Reposto)</h3>
+                        <div class="chart-container-giro">
+                            <canvas id="suppliers-value-bar"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Replenished Items by Value (Vertical Bar) -->
+                    <div class="giro-chart-card" style="flex: 1.5 1 350px;">
+                        <h3>🔩 Top 10 Itens Repostos (Maior Gasto)</h3>
+                        <div class="chart-container-giro">
+                            <canvas id="items-value-bar"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Data Table Section with Advanced Search and Toolbar -->
+                <section class="data-section">
+                    <div class="table-container">
+                        <!-- Toolbar -->
+                        <div class="table-toolbar">
+                            <div class="search-group">
+                                <div class="search-box">
+                                    <span class="search-icon">🔍</span>
+                                    <input type="text" id="simple-search" placeholder="Buscar por código ou descrição...">
+                                </div>
+                                <div class="search-box">
+                                    <span class="search-icon">🧠</span>
+                                    <input type="text" id="advanced-search" placeholder="Busca inteligente (código + descrição + fornecedor)...">
+                                </div>
+                            </div>
+                            
+                            <div class="filters">
+                                <button class="filter-btn active" data-filter="all">
+                                    📁 Todos os Itens
+                                </button>
+                                <button class="filter-btn" data-filter="sim" style="border-color: rgba(16, 185, 129, 0.4); color: #34d399;">
+                                    🟢 Apenas Repostos (Sim)
+                                </button>
+                                <button class="filter-btn" data-filter="nao" style="border-color: rgba(244, 63, 94, 0.4); color: #fb7185;">
+                                    🔴 Apenas Não Repostos
+                                </button>
+
+                                <div class="action-group">
+                                    <button class="filter-btn" id="clear-filters-btn" style="border-color: rgba(255,255,255,0.1); color: var(--text-muted);">
+                                        🧹 Limpar
+                                    </button>
+                                    <button class="filter-btn btn-export" id="export-excel-btn" style="background: var(--primary); border: none; color: white;">
+                                        📥 Exportar Filtrado
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Table Wrapper -->
+                        <div class="table-wrapper">
+                            <table id="giro-table">
+                                <thead>
+                                    <tr>
+                                        <th id="sort-code" style="cursor: pointer; width: 120px;">Código <span class="sort-icon">↕️</span></th>
+                                        <th id="sort-desc" style="cursor: pointer;">Descrição <span class="sort-icon">↕️</span></th>
+                                        <th style="width: 80px; text-align: center;">UN</th>
+                                        <th style="width: 140px; text-align: center;">Comprado (6m)</th>
+                                        <th id="sort-recorrencia" style="cursor: pointer; width: 140px; text-align: center;">Recorrência <span class="sort-icon">↕️</span></th>
+                                        <th id="sort-qty" style="cursor: pointer; width: 130px; text-align: center;">Qtd Comprada <span class="sort-icon">↕️</span></th>
+                                        <th>Fornecedor</th>
+                                        <th id="sort-value" style="cursor: pointer; width: 150px; text-align: right;">Valor Gasto <span class="sort-icon">↕️</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="giro-table-body">
+                                    <!-- Populated dynamically via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Brasil dos Parafusos - Módulo de Análise de Giro de 6 Meses</p>
+        </footer>
+    </div>
+
+    <!-- Script loading -->
+    <script src="giro.js"></script>
+</body>
+
+</html>

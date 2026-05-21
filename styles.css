@@ -1741,7 +1741,7 @@ footer {
     font-weight: 500;
 }
 
-.sparkline-container {
+.card-nf .sparkline-container {
     flex: 1;
     max-width: 400px;
     height: 110px;
@@ -2507,3 +2507,33 @@ body.loading-active {
 .badge-suggest { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
 .badge-ok { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 .badge-ignored { background: rgba(148, 163, 184, 0.15); color: #9ca3af; }
+
+/* Premium Nav Dropdown Enhancements */
+.dropdown-content {
+    background: rgba(15, 23, 42, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(168, 85, 247, 0.25) !important;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 20px rgba(168, 85, 247, 0.1) !important;
+    min-width: 250px !important;
+    left: 0;
+    right: auto;
+    padding: 6px !important;
+}
+
+.dropdown-item-giro {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08)) !important;
+    border: 1px solid rgba(16, 185, 129, 0.25) !important;
+    color: #34d399 !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dropdown-item-giro:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(59, 130, 246, 0.15)) !important;
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    color: #10b981 !important;
+    padding-left: 22px !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.2) !important;
+}
+

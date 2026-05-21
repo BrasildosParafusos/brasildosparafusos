@@ -25,6 +25,7 @@ xcopy "%SOURCE%logo-parafuso.png" "%DEST%\" /Y /Q
 xcopy "%SOURCE%bridge.js" "%DEST%\" /Y /Q
 xcopy "%SOURCE%rupturas.*" "%DEST%\" /Y /Q
 xcopy "%SOURCE%entradas.*" "%DEST%\" /Y /Q
+xcopy "%SOURCE%giro.*" "%DEST%\" /Y /Q
 
 echo.
 echo [SUCESSO] Arquivos atualizados no XAMPP!
