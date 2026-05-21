@@ -653,34 +653,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         label: 'Itens Seguros',
                         data: safeHistory,
                         borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                        fill: true,
+                        borderWidth: 2,
+                        backgroundColor: 'transparent',
+                        fill: false,
                         tension: 0.4,
-                        pointRadius: snapshotHistory.length > 30 ? 2 : 5,
+                        pointRadius: snapshotHistory.length > 30 ? 1 : 3,
                         datalabels: {
                             color: '#34d399',
+                            font: { weight: '600', size: 10 },
                             align: 'top',
                             anchor: 'end',
                             offset: 6,
-                            textShadowColor: 'rgba(0, 0, 0, 0.8)',
-                            textShadowBlur: 4
+                            textShadowColor: 'rgba(0, 0, 0, 0.4)',
+                            textShadowBlur: 2
                         }
                     },
                     {
                         label: 'Itens em Criticidade (Rupturas)',
                         data: criticalHistory,
                         borderColor: '#fb7185',
-                        backgroundColor: 'rgba(251, 113, 133, 0.08)',
-                        fill: true,
+                        borderWidth: 2,
+                        backgroundColor: 'transparent',
+                        fill: false,
                         tension: 0.4,
-                        pointRadius: snapshotHistory.length > 30 ? 2 : 5,
+                        pointRadius: snapshotHistory.length > 30 ? 1 : 3,
                         datalabels: {
                             color: '#fb7185',
+                            font: { weight: '600', size: 10 },
                             align: 'bottom',
                             anchor: 'start',
                             offset: 6,
-                            textShadowColor: 'rgba(0, 0, 0, 0.8)',
-                            textShadowBlur: 4
+                            textShadowColor: 'rgba(0, 0, 0, 0.4)',
+                            textShadowBlur: 2
                         }
                     }
                 ]
