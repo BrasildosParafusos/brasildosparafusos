@@ -741,6 +741,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                                 <span class="cost-value">${rel.custo}</span>
                                                 <span class="cost-label">Custo Unit.</span>
                                             </div>
+                                            <div class="economic-sales" style="text-align: right; display: flex; flex-direction: column; margin-right: 12px; min-width: 80px;">
+                                                <span class="sales-value" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">${rel.vendas}</span>
+                                                <span class="sales-label" style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Vendas (6m)</span>
+                                            </div>
                                             <div class="economic-stock">
                                                 <span class="stock-value">${rel.estoque} <small>${rel.un}</small></span>
                                                 <span class="stock-label">Em Estoque</span>
@@ -773,6 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                             <div class="economic-cost">
                                                 <span class="cost-value">${nat.custo}</span>
                                                 <span class="cost-label">Custo Unit.</span>
+                                            </div>
+                                            <div class="economic-sales" style="text-align: right; display: flex; flex-direction: column; margin-right: 12px; min-width: 80px;">
+                                                <span class="sales-value" style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">${nat.vendas}</span>
+                                                <span class="sales-label" style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase;">Vendas (6m)</span>
                                             </div>
                                             <div class="economic-stock">
                                                 <span class="stock-value">${nat.estoque} <small>${nat.un}</small></span>

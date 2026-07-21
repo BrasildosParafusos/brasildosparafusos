@@ -1,13 +1,13 @@
-const http = require('http');
+﻿const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
 
 const PORT = 3000;
-const SOURCE_DIR = "C:\\Users\\Cassyano\\OneDrive - Brasil do Parafusos\\Comprasbrasil - Compras\\Base entrada de itens";
+const SOURCE_DIR = "C:\\Users\\Cassyano\\OneDrive - Brasil do Parafusos\\Compras\\Comprasbrasil - Compras\\Planilhas Gestor\\Análise de Entradas LFI 2.1.K";
 const OUTPUT_FILE = "data-entradas.js";
 const LEADTIME_FILE = "C:\\Users\\Cassyano\\OneDrive - Brasil do Parafusos\\Compras\\Relatório Lead time\\Base Leadtime.xlsx";
-const RUPTURE_DIR = "C:\\Users\\Cassyano\\OneDrive - Brasil do Parafusos\\Comprasbrasil - Compras\\Análise Rupturas";
+const RUPTURE_DIR = "C:\\Users\\Cassyano\\OneDrive - Brasil do Parafusos\\Compras\\Comprasbrasil - Compras\\Planilhas Gestor\\Análise Evolutiva EST 3.2.T";
 
 /**
  * Normaliza nomes de colunas para busca flexível
