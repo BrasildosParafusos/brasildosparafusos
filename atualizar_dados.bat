@@ -14,23 +14,25 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-:: Passo 2: Commit no Git
+:: Passo 2: Commit e Push no GitHub
 echo.
-echo [2/3] Commitando no Git...
-git add data-entradas.js .gitignore gerar_dados.js bridge.js
-git commit -m "sync: atualiza dados de entradas %date% %time:~0,5%"
-
-:: Passo 3: Push para o GitHub (servidor de revisao vai precisar de deploy manual)
-echo.
-echo [3/3] Enviando para o GitHub...
+echo [2/3] Enviando para o GitHub...
+git add data-entradas.js .gitignore gerar_dados.js bridge.js atualizar_dados.bat
+git commit -m "sync: atualiza dados de entradas %date%"
 git push origin main
+
+:: Passo 3: Fazer upload para o servidor de revisao (Hostinger)
+echo.
+echo [3/3] Publicando no servidor de revisao...
+curl -s -X POST "https://revisao.brasildosparafusos.com.br/compras/analise/deploy.php" ^
+     -F "token=BrasildosParafusos2026!deploy" ^
+     -F "data_file=@data-entradas.js"
 
 echo.
 echo ==========================================
-echo  CONCLUIDO! 
-echo  Agora acesse o servidor Hostinger e
-echo  atualize o arquivo data-entradas.js
-echo  via FTP ou File Manager.
+echo  CONCLUIDO!
+echo  O servidor de revisao foi atualizado.
+echo  Acesse: https://revisao.brasildosparafusos.com.br/compras/analise/
 echo ==========================================
 echo.
 pause
